@@ -172,3 +172,5 @@ This project is licensed under the UNLICENSE. See `LICENSE` for details.
 For questions or collaboration, reach out via GitHub Issues or email [henryalps@gmail.com](mailto:henryalps@gmail.com).
 
 Happy coding! Let's build the future of AI agents together!
+
+[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
