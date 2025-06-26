@@ -174,3 +174,5 @@ For questions or collaboration, reach out via GitHub Issues or email [henryalps@
 Happy coding! Let's build the future of AI agents together!
 
 [![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
+
+CDN acceleration and security protection for this project are sponsored by Tencent EdgeOne.
