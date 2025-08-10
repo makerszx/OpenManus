@@ -28,9 +28,28 @@ VL_MODEL = os.getenv("VL_MODEL", "gemini-2.0-flash")
 VL_BASE_URL = os.getenv("VL_BASE_URL")
 VL_API_KEY = os.getenv("VL_API_KEY")
 
+# LLM Provider
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai")
+
+# Groq LLM configuration
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama3-8b-8192")
+
+# Ollama LLM configuration
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3")
+
 # Chrome Instance configuration
 CHROME_INSTANCE_PATH = os.getenv("CHROME_INSTANCE_PATH")
 CHROME_HEADLESS = os.getenv("CHROME_HEADLESS", "False") == "True"
 CHROME_PROXY_SERVER = os.getenv("CHROME_PROXY_SERVER")
 CHROME_PROXY_USERNAME = os.getenv("CHROME_PROXY_USERNAME")
 CHROME_PROXY_PASSWORD = os.getenv("CHROME_PROXY_PASSWORD")
+
+# TTS Configuration
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+
+# Neo4j Configuration
+NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+NEO4J_USERNAME = os.getenv("NEO4J_USERNAME", "neo4j")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password")

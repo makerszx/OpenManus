@@ -11,6 +11,7 @@ from src.config import TEAM_MEMBERS
 from src.config.agents import AGENT_LLM_MAP
 from src.prompts.template import OpenManusPromptTemplate
 from src.utils.json_utils import repair_json_output
+from src.tools.tool_registry import get_tool
 from .types import State, Router # Import State and Router types
 
 logger = logging.getLogger(__name__)
@@ -31,6 +32,38 @@ def supervisor_node(state: State) -> Dict[str, Any]: # Modified return type to D
         .with_structured_output(schema=Router, method="json_mode")
         .invoke(messages)
     )
+
+    # Check for tool calls
+    if "tool_call" in response and response["tool_call"]:
+        tool_name = response["tool_call"]["name"]
+        tool_args = response["tool_call"]["args"]
+        tool = get_tool(tool_name)
+        if tool:
+            result = tool.invoke(tool_args)
+            return Command(
+                update={
+                    "messages": [
+                        HumanMessage(
+                            content=result,
+                            name="tool_executor",
+                        )
+                    ]
+                },
+                goto=state["next"],
+            )
+        else:
+            return Command(
+                update={
+                    "messages": [
+                        HumanMessage(
+                            content=f"Tool '{tool_name}' not found.",
+                            name="tool_executor",
+                        )
+                    ]
+                },
+                goto=state["next"],
+            )
+
     goto = response["next"]
     logger.debug(f"Current state messages: {state['messages']}")
     logger.debug(f"Supervisor response: {response}")
