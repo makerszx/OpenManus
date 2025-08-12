@@ -7,6 +7,7 @@ from src.agents.nodes.researcher_node import researcher_node
 from src.agents.nodes.coder_node import coder_node
 from src.agents.nodes.browser_node import browser_node
 from src.agents.nodes.reporter_node import reporter_node
+from src.agents.nodes.react_agent_node import react_agent_node
 
 def build_graph():
     """Build and return the agent workflow graph."""
@@ -20,6 +21,7 @@ def build_graph():
     builder.add_node("coder", coder_node)
     builder.add_node("browser", browser_node)
     builder.add_node("reporter", reporter_node)
+    builder.add_node("react_agent", react_agent_node)
 
     # Define edges
     builder.add_edge(START, "coordinator")
@@ -29,12 +31,13 @@ def build_graph():
     # Add conditional edges from supervisor to other agents
     builder.add_conditional_edges(
         "supervisor",
-        lambda state: state["next"],
+        lambda state: state.get("next", END),
         {
             "researcher": "researcher",
             "coder": "coder",
             "browser": "browser",
             "reporter": "reporter",
+            "react_agent": "react_agent",
             "FINISH": END,
         },
     )
@@ -43,6 +46,7 @@ def build_graph():
     builder.add_edge("coder", "supervisor") # Coder -> Supervisor
     builder.add_edge("browser", "supervisor") # Browser -> Supervisor
     builder.add_edge("reporter", "supervisor") # Reporter -> Supervisor
+    builder.add_edge("react_agent", "supervisor") # ReAct Agent -> Supervisor
 
     builder.set_entry_point("coordinator")
 

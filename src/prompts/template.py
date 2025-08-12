@@ -7,6 +7,7 @@ from langchain_core.prompts import PromptTemplate
 from langgraph.prebuilt.chat_agent_executor import AgentState
 
 from .prompt_registry import register_prompt, get_prompt
+from src.config import TEAM_MEMBERS
 
 def load_and_register_prompts():
     """Load all prompts from markdown files and register them in the prompt registry."""
@@ -41,7 +42,7 @@ class OpenManusPromptTemplate:
         # Escape curly braces for string formatting
         template = template.replace("{", "{{").replace("}", "}}")
         # Convert <<VAR>> to {VAR} format
-        template = re.sub(r"<<([^>>]+)>>", r"{1}", template)
+        template = re.sub(r"<<([^>>]+)>>", r"{\1}", template)
         return template
 
     @staticmethod
@@ -60,9 +61,9 @@ class OpenManusPromptTemplate:
 
         # Create and format the system prompt
         system_prompt = PromptTemplate(
-            input_variables=["CURRENT_TIME"],
+            input_variables=["CURRENT_TIME", "TEAM_MEMBERS"],
             template=OpenManusPromptTemplate.get_prompt_template(prompt_name),
-        ).format(CURRENT_TIME=current_time, **state)
+        ).format(CURRENT_TIME=current_time, TEAM_MEMBERS=", ".join(TEAM_MEMBERS), **state)
 
         # Combine system prompt with existing messages
         return [{"role": "system", "content": system_prompt}] + state["messages"]

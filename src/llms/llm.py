@@ -37,6 +37,7 @@ from src.config.env import (
 
 def get_llm_by_type(llm_type: LLMType) -> BaseChatModel:
     """Get the LLM for the given LLM type."""
+    print(f"Getting LLM of type: {llm_type}")
     if LLM_PROVIDER == "azure":
         if llm_type == "reasoning":
             azure_deployment = REASONING_AZURE_DEPLOYMENT

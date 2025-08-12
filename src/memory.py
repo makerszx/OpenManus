@@ -34,4 +34,5 @@ def load_state() -> State:
             "deep_thinking_mode": False,
             "search_before_planning": False,
             "search_results": [],
+            "tool_call": None,
         }

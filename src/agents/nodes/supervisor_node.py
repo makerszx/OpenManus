@@ -1,5 +1,6 @@
 import logging
 import json_repair
+import re
 from copy import deepcopy
 from typing import Literal, Dict, Any
 
@@ -27,16 +28,26 @@ def supervisor_node(state: State) -> Dict[str, Any]: # Modified return type to D
     for message in messages:
         if isinstance(message, BaseMessage) and message.name in TEAM_MEMBERS:
             message.content = RESPONSE_FORMAT.format(message.name, message.content)
-    response = (
-        get_llm_by_type(AGENT_LLM_MAP["supervisor"])
-        .with_structured_output(schema=Router, method="json_mode")
-        .invoke(messages)
-    )
+    response = get_llm_by_type(AGENT_LLM_MAP["supervisor"]).invoke(messages)
+
+    try:
+        response_data = json_repair.loads(response.content)
+    except Exception as e:
+        # If parsing fails, try to extract JSON from the response
+        json_match = re.search(r"\{.*\}", response.content, re.DOTALL)
+        if json_match:
+            try:
+                response_data = json_repair.loads(json_match.group(0))
+            except Exception as e:
+                # If we still can't parse it, we have to give up
+                return Command(goto=END)
+        else:
+            return Command(goto=END)
 
     # Check for tool calls
-    if "tool_call" in response and response["tool_call"]:
-        tool_name = response["tool_call"]["name"]
-        tool_args = response["tool_call"]["args"]
+    if isinstance(response_data, dict) and "tool_call" in response_data and response_data["tool_call"]:
+        tool_name = response_data["tool_call"]["name"]
+        tool_args = response_data["tool_call"]["args"]
         tool = get_tool(tool_name)
         if tool:
             result = tool.invoke(tool_args)
@@ -61,17 +72,19 @@ def supervisor_node(state: State) -> Dict[str, Any]: # Modified return type to D
                         )
                     ]
                 },
-                goto=state["next"],
+                goto=END,
             )
 
-    goto = response["next"]
+    if isinstance(response_data, dict):
+        goto = response_data.get("next", "FINISH")
+    else:
+        goto = "FINISH"
+
     logger.debug(f"Current state messages: {state['messages']}")
     logger.debug(f"Supervisor response: {response}")
 
     if goto == "FINISH":
-        goto = "__end__"
-        logger.info("Workflow completed")
+        return Command(goto="FINISH")
     else:
         logger.info(f"Supervisor delegating to: {goto}")
-
-    return Command(goto=goto, update={"next": goto})
+        return Command(goto=goto, update={"next": goto})
