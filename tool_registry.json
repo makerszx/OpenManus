@@ -50,5 +50,9 @@
     "search_and_summarize": {
         "module": "src.tools.custom.search_and_summarize",
         "function": "get_llm_by_type"
+    },
+    "my_new_tool": {
+        "module": "src.tools.custom.my_new_tool",
+        "function": "my_new_tool"
     }
 }

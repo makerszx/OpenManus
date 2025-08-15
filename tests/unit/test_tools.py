@@ -13,7 +13,7 @@ def my_new_tool(a: int, b: int) -> int:
     \"\"\"A new tool that adds two numbers.\"\"\"
     return a + b
 """
-    create_tool(tool_code)
+    create_tool({"name": "my_new_tool", "code": tool_code})
     new_tool = get_tool("my_new_tool")
     assert new_tool is not None
     assert new_tool.invoke({"a": 1, "b": 2}) == 3

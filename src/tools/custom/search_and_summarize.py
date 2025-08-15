@@ -14,7 +14,6 @@ def search_and_summarize(query: str) -> str:
         str: The summarized content of the top search result.
     '''
     llm = get_llm_by_type("reasoning")
-
     search_results = search_tool.invoke({"query": query})
     if not search_results:
         return "Error: No search results found."
