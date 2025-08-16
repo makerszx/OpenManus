@@ -20,3 +20,5 @@ gTTS>=2.2.0
 neo4j-graphrag[openai]>=0.1.0
 pytest-mock>=3.6.0
 beautifulsoup4>=4.9.3
+langchain-groq>=0.1.0
+langchain-openai>=0.1.0
